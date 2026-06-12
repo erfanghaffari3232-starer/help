@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>راهنمای GitHub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Tahoma, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh; padding: 20px; color: white;
+        }
+        .container {
+            max-width: 800px; margin: 0 auto;
+            background: rgba(26,26,46,0.9); border-radius: 24px; padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 { text-align: center; color: #e94560; font-size: 2rem; }
+        .subtitle { text-align: center; color: #a2a8d3; margin-bottom: 1.5rem; }
+
+        .tabs { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem; }
+        .tab {
+            background: rgba(255,255,255,0.05); color: #aaa; border: 1px solid rgba(255,255,255,0.15);
+            padding: 10px 16px; border-radius: 10px; cursor: pointer; font-family: Tahoma;
+            font-size: 0.85rem; transition: 0.3s;
+        }
+        .tab:hover { background: rgba(255,255,255,0.1); }
+        .tab.active { background: #e94560; color: white; border-color: #e94560; }
+
+        .content {
+            background: rgba(255,255,255,0.03); border-radius: 16px; padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.08); min-height: 300px;
+            line-height: 2;
+        }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .panel h2 { color: #4ecca3; margin-bottom: 1rem; }
+        .panel ol, .panel ul { padding-right: 20px; }
+        .panel li { margin-bottom: 0.8rem; }
+        .panel code {
+            background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 6px;
+            font-family: 'Courier New', monospace; direction: ltr; display: inline-block;
+            color: #f39c12;
+        }
+        .tip {
+            background: rgba(78,204,163,0.1); border: 1px solid rgba(78,204,163,0.3);
+            padding: 12px; border-radius: 10px; margin-top: 1rem; color: #4ecca3;
+        }
+        .warning {
+            background: rgba(233,69,96,0.1); border: 1px solid rgba(233,69,96,0.3);
+            padding: 12px; border-radius: 10px; margin-top: 1rem; color: #e94560;
+        }
+        .footer { text-align: center; margin-top: 1.5rem; color: #666; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🐱 راهنمای کامل GitHub</h1>
+    <p class="subtitle">همه چیز درباره GitHub به زبان ساده</p>
+
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('start')">🚀 شروع</button>
+        <button class="tab" onclick="showTab('repo')">📂 مخزن</button>
+        <button class="tab" onclick="showTab('upload')">📤 آپلود</button>
+        <button class="tab" onclick="showTab('pages')">🌐 Pages</button>
+        <button class="tab" onclick="showTab('git')">💻 دستورات</button>
+        <button class="tab" onclick="showTab('tips')">💡 نکات</button>
+    </div>
+
+    <div class="content">
+        <div class="panel active" id="start">
+            <h2>🚀 شروع کار با GitHub</h2>
+            <ol>
+                <li>برو به سایت <code>github.com</code></li>
+                <li>روی <code>Sign up</code> کلیک کن</li>
+                <li>ایمیل، پسورد و نام کاربری وارد کن</li>
+                <li>ایمیلت رو تأیید کن</li>
+                <li>حالا یه اکانت GitHub داری!</li>
+            </ol>
+            <div class="tip">💡 نام کاربری رو کوتاه و ساده انتخاب کن. این اسم توی آدرس سایتت میاد!</div>
+        </div>
+
+        <div class="panel" id="repo">
+            <h2>📂 ساخت مخزن</h2>
+            <ol>
+                <li>وارد اکانتت شو</li>
+                <li>بالا سمت راست، روی <code>+</code> کلیک کن</li>
+                <li><code>New repository</code> رو بزن</li>
+                <li>یه اسم انتخاب کن (مثلاً <code>my-project</code>)</li>
+                <li><code>Public</code> رو انتخاب کن</li>
+                <li>روی <code>Create repository</code> کلیک کن</li>
+            </ol>
+            <div class="tip">💡 اسم مخزن رو انگلیسی و بدون فاصله بنویس.</div>
+        </div>
+
+        <div class="panel" id="upload">
+            <h2>📤 آپلود فایل</h2>
+            <ol>
+                <li>وارد مخزنت شو</li>
+                <li>روی <code>Add file</code> کلیک کن</li>
+                <li><code>Upload files</code> رو بزن</li>
+                <li>فایل‌هات رو بکش و رها کن</li>
+                <li>پایین صفحه <code>Commit changes</code> رو بزن</li>
+            </ol>
+            <div class="warning">⚠️ حجم هر فایل حداکثر ۲۵ مگابایت باشه.</div>
+        </div>
+
+        <div class="panel" id="pages">
+            <h2>🌐 فعال کردن GitHub Pages</h2>
+            <ol>
+                <li>وارد مخزنت شو</li>
+                <li>برو به <code>Settings</code></li>
+                <li>از سمت چپ <code>Pages</code> رو انتخاب کن</li>
+                <li>توی <code>Branch</code>، <code>main</code> رو انتخاب کن</li>
+                <li><code>Save</code> رو بزن</li>
+                <li>۱-۲ دقیقه صبر کن</li>
+            </ol>
+            <div class="tip">💡 آدرس سایتت: <code>username.github.io/repo-name/</code></div>
+        </div>
+
+        <div class="panel" id="git">
+            <h2>💻 دستورات مهم Git</h2>
+            <ul>
+                <li><code>git init</code> - شروع مخزن جدید</li>
+                <li><code>git add .</code> - اضافه کردن فایل‌ها</li>
+                <li><code>git commit -m "پیام"</code> - ذخیره تغییرات</li>
+                <li><code>git push</code> - آپلود روی GitHub</li>
+                <li><code>git pull</code> - دانلود از GitHub</li>
+                <li><code>git clone آدرس</code> - کپی مخزن</li>
+                <li><code>git status</code> - وضعیت فعلی</li>
+            </ul>
+        </div>
+
+        <div class="panel" id="tips">
+            <h2>💡 نکات مهم</h2>
+            <ul>
+                <li>✅ اسم فایل اصلی <code>index.html</code> باشه</li>
+                <li>✅ مخزن <code>Public</code> باشه</li>
+                <li>✅ از <code>README.md</code> برای توضیحات استفاده کن</li>
+                <li>✅ بعد از آپلود صبر کن</li>
+                <li>✅ License رو <code>None</code> بذار</li>
+            </ul>
+            <div class="warning">⚠️ رمز عبور رو توی GitHub نذار!</div>
+        </div>
+    </div>
+
+    <div class="footer">🐱 ساخته شده برای یادگیری GitHub</div>
+</div>
+
+<script>
+    function showTab(tabName) {
+        var tabs = document.querySelectorAll('.tab');
+        var panels = document.querySelectorAll('.panel');
+        
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('active');
+        }
+        for (var j = 0; j < panels.length; j++) {
+            panels[j].classList.remove('active');
+        }
+        
+        document.querySelector('[data-tab="' + tabName + '"]').classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+    }
+</script>
+</body>
+</html>
