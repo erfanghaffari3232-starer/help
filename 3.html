@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پیام‌رسان | چت خصوصی</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Tahoma;background:#1a1a2e;height:100vh;display:flex;justify-content:center;align-items:center;color:white}
+        
+        .app{width:100%;max-width:450px;height:90vh;background:#0d0d1a;border-radius:24px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+        
+        /* صفحه ورود */
+        .login-page{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:30px;text-align:center}
+        .login-page h2{color:#e94560;margin-bottom:5px}
+        .login-page p{color:#a2a8d3;margin-bottom:20px;font-size:0.85rem}
+        .login-page input{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);padding:14px;border-radius:12px;color:white;font-family:Tahoma;font-size:1rem;text-align:center;margin-bottom:10px}
+        .login-page input:focus{outline:none;border-color:#e94560}
+        .login-btn{background:#e94560;color:white;border:none;padding:14px 40px;border-radius:12px;cursor:pointer;font-family:Tahoma;font-weight:bold;font-size:1rem;width:100%}
+        .login-btn:hover{background:#c73652}
+        
+        /* صفحه اصلی */
+        .main-page{display:none;flex-direction:column;height:100%}
+        .main-page.show{display:flex}
+        
+        .header{background:#1a1a2e;padding:15px 20px;display:flex;justify-content:space-between;align-items:center}
+        .header .user-info{display:flex;align-items:center;gap:10px}
+        .header .avatar{width:40px;height:40px;border-radius:50%;background:#e94560;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+        .header .name{font-weight:bold}
+        .header .online-dot{width:10px;height:10px;background:#4ecca3;border-radius:50%;display:inline-block;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        .logout-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:Tahoma;font-size:0.8rem}
+        
+        /* تب‌ها */
+        .tabs{display:flex;background:#1a1a2e}
+        .tab{flex:1;padding:12px;text-align:center;cursor:pointer;color:#888;border-bottom:2px solid transparent;font-size:0.85rem;transition:0.3s}
+        .tab.active{color:#e94560;border-bottom-color:#e94560}
+        
+        /* لیست کاربران */
+        .users-list{flex:1;overflow-y:auto;padding:10px}
+        .user-item{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;cursor:pointer;transition:0.3s;margin-bottom:5px}
+        .user-item:hover{background:rgba(255,255,255,0.05)}
+        .user-item .avatar{width:45px;height:45px;border-radius:50%;background:#533483;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+        .user-item .info{flex:1}
+        .user-item .name{font-weight:bold;font-size:0.9rem}
+        .user-item .email{font-size:0.75rem;color:#666}
+        .user-item .status{font-size:0.7rem;color:#4ecca3}
+        .user-item .status.offline{color:#666}
+        
+        /* صفحه چت */
+        .chat-page{display:none;flex-direction:column;height:100%}
+        .chat-page.show{display:flex}
+        .chat-header{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;gap:10px}
+        .back-btn{background:none;border:none;color:white;font-size:1.5rem;cursor:pointer}
+        .chat-header .avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+        .chat-header .name{font-weight:bold}
+        .chat-header .online-dot{width:8px;height:8px;background:#4ecca3;border-radius:50%;display:inline-block;margin-left:5px}
+        
+        .messages{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:8px}
+        .msg{max-width:80%;padding:12px 16px;border-radius:16px;font-size:0.9rem;line-height:1.5;animation:msgIn 0.3s ease}
+        @keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .msg.sent{align-self:flex-end;background:#e94560;color:white;border-bottom-left-radius:4px}
+        .msg.received{align-self:flex-start;background:#2a2a3e;color:white;border-bottom-right-radius:4px}
+        .msg .time{font-size:0.65rem;color:rgba(255,255,255,0.5);margin-top:4px;direction:ltr;text-align:left}
+        
+        .input-area{display:flex;gap:8px;padding:12px 15px;background:#1a1a2e}
+        .input-area input{flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);padding:12px 15px;border-radius:25px;color:white;font-family:Tahoma}
+        .input-area input:focus{outline:none;border-color:#e94560}
+        .send-btn{background:#e94560;color:white;border:none;width:45px;height:45px;border-radius:50%;cursor:pointer;font-size:1.3rem}
+        
+        .empty{text-align:center;color:#555;padding:40px}
+        .loading{text-align:center;padding:20px;color:#f39c12;display:none}
+        .loading.show{display:block}
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <!-- صفحه ورود -->
+    <div class="login-page" id="loginPage">
+        <h2>💬 پیام‌رسان</h2>
+        <p>ایمیل خود را وارد کنید</p>
+        <input type="email" id="emailInput" placeholder="example@mail.com">
+        <button class="login-btn" onclick="login()">🚀 ورود</button>
+    </div>
+
+    <!-- صفحه اصلی -->
+    <div class="main-page" id="mainPage">
+        <div class="header">
+            <div class="user-info">
+                <div class="avatar" id="myAvatar">👤</div>
+                <div>
+                    <div class="name" id="myName">کاربر</div>
+                    <span class="online-dot"></span> آنلاین
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">🚪 خروج</button>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('chats')">💬 چت‌ها</div>
+            <div class="tab" onclick="switchTab('users')">👥 کاربران</div>
+        </div>
+
+        <!-- لیست چت‌ها -->
+        <div class="users-list" id="chatsList">
+            <div class="empty">💬 چت خصوصی با کاربران زیر</div>
+        </div>
+
+        <!-- لیست کاربران -->
+        <div class="users-list" id="usersList" style="display:none">
+            <div class="loading show">در حال بارگذاری...</div>
+        </div>
+    </div>
+
+    <!-- صفحه چت -->
+    <div class="chat-page" id="chatPage">
+        <div class="chat-header">
+            <button class="back-btn" onclick="backToMain()">←</button>
+            <div class="avatar" id="chatAvatar">👤</div>
+            <div>
+                <div class="name" id="chatName">کاربر</div>
+                <span class="online-dot"></span> آنلاین
+            </div>
+        </div>
+        <div class="messages" id="messagesArea"></div>
+        <div class="input-area">
+            <input type="text" id="chatInput" placeholder="پیام..." onkeypress="if(event.key==='Enter')sendMessage()">
+            <button class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+</div>
+
+<script>
+var API_URL = 'https://script.google.com/macros/s/AKfycbxwBj4cJU2jKUTLZH91eMHkjuTmPZlpVaz-AQ7m5fn7ogVNxtIxoIlCzy1MJOwNCMjCkg/exec';
+var currentUser = null;
+var selectedChat = null;
+
+// چک کاربر ذخیره شده
+var saved = localStorage.getItem('messengerUser');
+if (saved) {
+    currentUser = JSON.parse(saved);
+    showMain();
+}
+
+function login() {
+    var email = document.getElementById('emailInput').value.trim().toLowerCase();
+    if (!email || !email.includes('@')) { alert('ایمیل معتبر وارد کن'); return; }
+    
+    var avatars = ['😊','😎','🤩','😇','🥳','😍','🤓','🦊','🐱'];
+    currentUser = {
+        email: email,
+        name: email.split('@')[0],
+        avatar: avatars[Math.floor(Math.random() * avatars.length)]
+    };
+    
+    localStorage.setItem('messengerUser', JSON.stringify(currentUser));
+    showMain();
+}
+
+function logout() {
+    localStorage.removeItem('messengerUser');
+    currentUser = null;
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('mainPage').classList.remove('show');
+}
+
+function showMain() {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('mainPage').classList.add('show');
+    document.getElementById('myName').textContent = currentUser.name;
+    document.getElementById('myAvatar').textContent = currentUser.avatar;
+    loadChats();
+}
+
+function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+    document.querySelector('[onclick="switchTab(\''+tab+'\')"]').classList.add('active');
+    
+    document.getElementById('chatsList').style.display = tab === 'chats' ? 'block' : 'none';
+    document.getElementById('usersList').style.display = tab === 'users' ? 'block' : 'none';
+    
+    if (tab === 'users') loadUsers();
+}
+
+async function loadUsers() {
+    var container = document.getElementById('usersList');
+    container.innerHTML = '<div class="loading show">در حال بارگذاری...</div>';
+    
+    try {
+        var response = await fetch(API_URL);
+        var allMessages = await response.json();
+        
+        var users = {};
+        allMessages.forEach(function(m) {
+            if (m.sender !== currentUser.email && !users[m.sender]) {
+                users[m.sender] = {email:m.sender, name:m.name||m.sender.split('@')[0], avatar:m.avatar||'👤'};
+            }
+        });
+        
+        var userList = Object.values(users);
+        if (userList.length === 0) {
+            container.innerHTML = '<div class="empty">👥 هنوز کاربری نیست</div>';
+        } else {
+            container.innerHTML = userList.map(function(u) {
+                return '<div class="user-item" onclick="openChat(\''+u.email+'\',\''+u.name+'\',\''+u.avatar+'\')">' +
+                    '<div class="avatar" style="background:#533483">'+u.avatar+'</div>' +
+                    '<div class="info"><div class="name">'+u.name+'</div>' +
+                    '<div class="email">'+u.email+'</div></div>' +
+                    '<div class="status">🟢 آنلاین</div></div>';
+            }).join('');
+        }
+    } catch(e) {
+        container.innerHTML = '<div class="empty">❌ خطا</div>';
+    }
+}
+
+async function loadChats() {
+    var container = document.getElementById('chatsList');
+    
+    try {
+        var response = await fetch(API_URL);
+        var allMessages = await response.json();
+        
+        var chats = {};
+        allMessages.forEach(function(m) {
+            var other = m.sender === currentUser.email ? m.text.split('|')[0] : m.sender;
+            if (m.sender !== currentUser.email && !chats[m.sender]) {
+                chats[m.sender] = {email:m.sender, name:m.name||m.sender.split('@')[0], avatar:m.avatar||'👤', lastMsg:m.text, date:m.date};
+            }
+        });
+        
+        var chatList = Object.values(chats);
+        if (chatList.length === 0) {
+            container.innerHTML = '<div class="empty">💬 با کاربران چت کن</div>';
+        } else {
+            container.innerHTML = chatList.map(function(c) {
+                var d = new Date(c.date);
+                var time = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+                return '<div class="user-item" onclick="openChat(\''+c.email+'\',\''+c.name+'\',\''+c.avatar+'\')">' +
+                    '<div class="avatar">'+c.avatar+'</div>' +
+                    '<div class="info"><div class="name">'+c.name+'</div>' +
+                    '<div class="last-msg" style="color:#888;font-size:0.8rem">'+c.lastMsg.substring(0,30)+'</div></div>' +
+                    '<div style="color:#666;font-size:0.7rem">'+time+'</div></div>';
+            }).join('');
+        }
+    } catch(e) {}
+}
+
+function openChat(email, name, avatar) {
+    selectedChat = {email:email, name:name, avatar:avatar};
+    document.getElementById('mainPage').classList.remove('show');
+    document.getElementById('chatPage').classList.add('show');
+    document.getElementById('chatName').textContent = name;
+    document.getElementById('chatAvatar').textContent = avatar;
+    document.getElementById('chatAvatar').style.background = '#533483';
+    loadMessages();
+    document.getElementById('chatInput').focus();
+}
+
+function backToMain() {
+    document.getElementById('chatPage').classList.remove('show');
+    document.getElementById('mainPage').classList.add('show');
+    selectedChat = null;
+    loadChats();
+}
+
+async function sendMessage() {
+    var text = document.getElementById('chatInput').value.trim();
+    if (!text || !selectedChat) return;
+    
+    document.getElementById('chatInput').value = '';
+    
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                id: Date.now().toString(),
+                sender: currentUser.email,
+                name: currentUser.name,
+                avatar: currentUser.avatar,
+                text: text,
+                date: new Date().toISOString()
+            })
+        });
+        loadMessages();
+    } catch(e) {}
+}
+
+async function loadMessages() {
+    var area = document.getElementById('messagesArea');
+    if (!selectedChat) return;
+    
+    try {
+        var response = await fetch(API_URL);
+        var allMessages = await response.json();
+        
+        var chatMessages = allMessages.filter(function(m) {
+            return (m.sender === currentUser.email && m.sender === selectedChat.email) ||
+                   (m.sender === selectedChat.email && m.sender === currentUser.email);
+        });
+        
+        if (chatMessages.length === 0) {
+            area.innerHTML = '<div class="empty">💬 شروع چت با '+selectedChat.name+'</div>';
+        } else {
+            area.innerHTML = chatMessages.map(function(m) {
+                var isSent = m.sender === currentUser.email;
+                var d = new Date(m.date);
+                var time = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+                return '<div class="msg '+ (isSent?'sent':'received') +'">' +
+                    '<div>'+m.text+'</div><div class="time">'+time+'</div></div>';
+            }).join('');
+            area.scrollTop = area.scrollHeight;
+        }
+    } catch(e) {}
+}
+
+// رفرش
+setInterval(function() {
+    if (currentUser) {
+        if (selectedChat) loadMessages();
+        else loadChats();
+    }
+}, 3000);
+</script>
+</body>
+</html>
